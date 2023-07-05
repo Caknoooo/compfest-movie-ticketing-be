@@ -13,7 +13,6 @@ type User struct{
 	Email    string    `gorm:"type:varchar(100)" json:"email"`
 	Password string    `gorm:"type:varchar(100)" json:"password"`
 	Role     string    `gorm:"type:varchar(100)" json:"role"`
-
 	Timestamp
 }
 
