@@ -13,4 +13,6 @@ type Topup struct {
 
 	UserID uuid.UUID `gorm:"type:uuid" json:"user_id"`
 	User   User      `gorm:"foreignKey:UserID" json:"-"`
+
+	Timestamp
 }

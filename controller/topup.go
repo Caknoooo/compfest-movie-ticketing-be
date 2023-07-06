@@ -79,7 +79,7 @@ func (tc *topupController) GetTopupByID(ctx *gin.Context) {
 	id := ctx.Param("id")
 	uuid, err := uuid.Parse(id)
 	if err != nil {
-		res := utils.BuildResponseFailed("Gagal Mendapatkan Topup", err.Error(), utils.EmptyObj{})
+		res := utils.BuildResponseFailed("Gagal Parse ID", err.Error(), utils.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
