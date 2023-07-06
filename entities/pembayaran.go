@@ -10,4 +10,5 @@ type Pembayaran struct {
 	UserID     uuid.UUID `gorm:"type:uuid" json:"user_id"`
 	User         User       `gorm:"foreignKey:UserID" json:"user,omitempty"`
 
+	Timestamp
 }

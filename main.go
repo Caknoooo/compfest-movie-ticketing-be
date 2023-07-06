@@ -28,11 +28,14 @@ func main() {
 		topupRepository repository.TopupRepository = repository.NewTopupRepository(db)
 		topupService    services.TopupService      = services.NewTopupService(topupRepository)
 		topupController controller.TopupController = controller.NewTopupController(topupService, jwtService)
+		movierepository repository.MovieRepository = repository.NewMoviesRepository(db)
+		movieService    services.MovieService      = services.NewMovieService(movierepository)
+		movieController controller.MovieController = controller.NewMovieController(movieService, jwtService, userService)
 	)
 
 	server := gin.Default()
 	server.Use(middleware.CORSMiddleware())
-	routes.Router(server, userController, seederController, topupController, jwtService)
+	routes.Router(server, userController, seederController, topupController, movieController,jwtService)
 
 	if err := config.Seeder(db); err != nil {
 		log.Fatalf("error seeding database: %v", err)
