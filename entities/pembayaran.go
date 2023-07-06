@@ -7,4 +7,7 @@ type Pembayaran struct {
 	Jumlah float64 `gorm:"type:float" json:"jumlah"`
 
 	ListBankID uint `gorm:"type:uint" json:"list_bank_id"`
+	UserID     uuid.UUID `gorm:"type:uuid" json:"user_id"`
+	User         User       `gorm:"foreignKey:UserID" json:"user,omitempty"`
+
 }

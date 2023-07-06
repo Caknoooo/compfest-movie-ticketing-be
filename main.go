@@ -25,11 +25,14 @@ func main() {
 		seederRepository repository.SeederRepository = repository.NewSeederRepository(db)
 		seederService    services.SeederService      = services.NewSeederService(seederRepository)
 		seederController controller.SeederController = controller.NewSeederController(seederService)
+		topupRepository repository.TopupRepository = repository.NewTopupRepository(db)
+		topupService    services.TopupService      = services.NewTopupService(topupRepository)
+		topupController controller.TopupController = controller.NewTopupController(topupService, jwtService)
 	)
 
 	server := gin.Default()
 	server.Use(middleware.CORSMiddleware())
-	routes.Router(server, userController, seederController, jwtService)
+	routes.Router(server, userController, seederController, topupController, jwtService)
 
 	if err := config.Seeder(db); err != nil {
 		log.Fatalf("error seeding database: %v", err)

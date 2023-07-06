@@ -41,6 +41,7 @@ func SetUpDatabaseConnection() *gorm.DB{
 
 	if err := db.AutoMigrate(
 		entities.Pembayaran{},
+		entities.Topup{},
 		entities.User{},
 	); err != nil{
 		fmt.Println(err)
