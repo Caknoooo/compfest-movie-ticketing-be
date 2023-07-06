@@ -15,6 +15,9 @@ type User struct{
 	Role     string    `gorm:"type:varchar(100)" json:"role"`
 	Saldo    float64   `gorm:"type:float" json:"saldo"`
 	Timestamp
+
+	Topup []Topup `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
+	Pembayaran []Pembayaran `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"-"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error{	

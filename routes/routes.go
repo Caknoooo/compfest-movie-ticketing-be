@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Router(route *gin.Engine, UserController controller.UserController, SeederController controller.SeederController, jwtService services.JWTService) {
+func Router(route *gin.Engine, UserController controller.UserController, SeederController controller.SeederController, topupController controller.TopupController, jwtService services.JWTService) {
 	routes := route.Group("/api/user")
 	{
 		routes.POST("", UserController.RegisterUser)
@@ -22,5 +22,12 @@ func Router(route *gin.Engine, UserController controller.UserController, SeederC
 	{
 		seederRoutes.GET("/", SeederController.GetAllBank)
 		seederRoutes.GET("/:id", SeederController.GetBankByID)
+	}
+
+	topupRoutes := route.Group("/api/topup") 
+	{
+		topupRoutes.POST("/", middleware.Authenticate(jwtService), topupController.CreateTopup)
+		topupRoutes.GET("/", middleware.Authenticate(jwtService), topupController.GetAllTopupUser)
+		topupRoutes.GET("/:id", topupController.GetTopupByID)
 	}
 }
