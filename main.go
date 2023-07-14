@@ -7,6 +7,7 @@ import (
 	"github.com/Caknoooo/golang-clean_template/config"
 	"github.com/Caknoooo/golang-clean_template/controller"
 	"github.com/Caknoooo/golang-clean_template/middleware"
+	"github.com/Caknoooo/golang-clean_template/migration"
 	"github.com/Caknoooo/golang-clean_template/repository"
 	"github.com/Caknoooo/golang-clean_template/routes"
 	"github.com/Caknoooo/golang-clean_template/services"
@@ -31,13 +32,16 @@ func main() {
 		movierepository repository.MovieRepository = repository.NewMoviesRepository(db)
 		movieService    services.MovieService      = services.NewMovieService(movierepository)
 		movieController controller.MovieController = controller.NewMovieController(movieService, jwtService, userService)
+		ticketRepository repository.TicketRepository = repository.NewTicketRepository(db)
+		ticketService services.TicketService = services.NewTicketService(ticketRepository)
+		ticketController controller.TicketController = controller.NewTicketController(ticketService, jwtService)
 	)
 
 	server := gin.Default()
 	server.Use(middleware.CORSMiddleware())
-	routes.Router(server, userController, seederController, topupController, movieController,jwtService)
+	routes.Router(server, userController, seederController, topupController, movieController, ticketController, jwtService)
 
-	if err := config.Seeder(db); err != nil {
+	if err := migration.Seeder(db); err != nil {
 		log.Fatalf("error seeding database: %v", err)
 	}
 

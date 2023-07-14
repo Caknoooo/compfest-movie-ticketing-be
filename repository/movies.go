@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"math/rand"
 
 	"github.com/Caknoooo/golang-clean_template/entities"
 	"github.com/google/uuid"
@@ -11,7 +12,8 @@ import (
 type MovieRepository interface {
 	CreateMovies(ctx context.Context, movies entities.Movies) (entities.Movies, error)
 	GetAllMovies(ctx context.Context) ([]entities.Movies, error)
-	GetMovieByID(ctx context.Context, movieID uuid.UUID) (entities.Movies, error)
+	GetMovieByID(ctx context.Context, movieID uuid.UUID) (any, error)
+	GenerateRandomTimeMovie() ([]entities.TimeMovie, error)
 }
 
 type movieRepository struct {
@@ -39,10 +41,51 @@ func (mr *movieRepository) GetAllMovies(ctx context.Context) ([]entities.Movies,
 	return movies, nil
 }
 
-func (mr *movieRepository) GetMovieByID(ctx context.Context, movieID uuid.UUID) (entities.Movies, error) {
-	var movies entities.Movies
-	if err := mr.connection.Where("id = ?", movieID).Take(&movies).Error; err != nil {
-		return entities.Movies{}, err
+func (mr *movieRepository) GetMovieByID(ctx context.Context, movieID uuid.UUID) (interface{}, error) {
+	var data struct {
+		Movies entities.Movies
+		Studio []struct {
+			ID        uint               
+			Name      string            
+			TimeMovie []entities.TimeMovie
+		}
 	}
-	return movies, nil
+
+	var studio []entities.Place
+
+	if err := mr.connection.Where("id = ?", movieID).First(&data.Movies).Error; err != nil {
+		return nil, err
+	}
+
+	if err := mr.connection.Find(&studio).Error; err != nil {
+		return nil, err
+	}
+
+	for i := range studio {
+		timeMovie, err := mr.GenerateRandomTimeMovie()
+		if err != nil {
+			return nil, err
+		}
+		data.Studio = append(data.Studio, struct {
+			ID        uint               
+			Name      string            
+			TimeMovie []entities.TimeMovie
+		}{
+			ID:        uint(studio[i].ID), 
+			Name:      studio[i].Name,
+			TimeMovie: timeMovie,
+		})
+	}
+
+	return data, nil
+}
+
+func (mr *movieRepository) GenerateRandomTimeMovie() ([]entities.TimeMovie, error) {
+	var timeMovie []entities.TimeMovie
+
+	if err := mr.connection.Where("type = ?", rand.Intn(5) + 1).Find(&timeMovie).Error; err != nil {
+		return []entities.TimeMovie{}, err
+	}
+
+	return timeMovie, nil
 }

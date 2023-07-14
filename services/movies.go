@@ -14,7 +14,7 @@ import (
 type MovieService interface {
 	CreateMovies(ctx context.Context, movieDTO dto.MovieCreateDTO) (entities.Movies, error)
 	GetAllMovies(ctx context.Context) ([]entities.Movies, error)
-	GetMovieByID(ctx context.Context, movieID uuid.UUID) (entities.Movies, error)
+	GetMovieByID(ctx context.Context, movieID uuid.UUID) (any, error)
 }
 
 type movieService struct {
@@ -56,6 +56,6 @@ func (ms *movieService) GetAllMovies(ctx context.Context) ([]entities.Movies, er
 	return ms.movieRepository.GetAllMovies(ctx)
 }
 
-func (ms *movieService) GetMovieByID(ctx context.Context, movieID uuid.UUID) (entities.Movies, error) {
+func (ms *movieService) GetMovieByID(ctx context.Context, movieID uuid.UUID) (any, error) {
 	return ms.movieRepository.GetMovieByID(ctx, movieID)
 }
