@@ -48,33 +48,33 @@ func (j *jwtService) GenerateToken(UserID uuid.UUID, role string) string {
 		role,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 120)),
-			Issuer: j.issuer,
-			IssuedAt: jwt.NewNumericDate(time.Now()),
+			Issuer:    j.issuer,
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tx, err := token.SignedString([]byte(j.secretKey))
-	if err != nil{
+	if err != nil {
 		log.Println(err)
 	}
 	return tx
 }
 
-func (j *jwtService) parseToken(t_ *jwt.Token)(any, error){
-	if _, ok := t_.Method.(*jwt.SigningMethodHMAC); !ok{
+func (j *jwtService) parseToken(t_ *jwt.Token) (any, error) {
+	if _, ok := t_.Method.(*jwt.SigningMethodHMAC); !ok {
 		return nil, fmt.Errorf("unexpected signing method %v", t_.Header["alg"])
 	}
 	return []byte(j.secretKey), nil
 }
 
-func (j *jwtService) ValidateToken(token string)(*jwt.Token, error){
-	return jwt.Parse(token, j.parseToken);
+func (j *jwtService) ValidateToken(token string) (*jwt.Token, error) {
+	return jwt.Parse(token, j.parseToken)
 }
 
-func (j *jwtService) GetUserIDByToken(token string)(uuid.UUID, error){
+func (j *jwtService) GetUserIDByToken(token string) (uuid.UUID, error) {
 	t_Token, err := j.ValidateToken(token)
-	if err != nil{
+	if err != nil {
 		return uuid.Nil, err
 	}
 	claims := t_Token.Claims.(jwt.MapClaims)

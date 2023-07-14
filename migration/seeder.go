@@ -1,4 +1,4 @@
-package config
+package migration
 
 import (
 	"errors"
@@ -20,6 +20,14 @@ func Seeder(db *gorm.DB) error {
 	}
 
 	if err := ListMovieSeeder(db); err != nil {
+		return err
+	}
+
+	if err := ListTimeMovieSeeder(db); err != nil {
+		return err
+	}
+
+	if err := ListStudioSeeder(db); err != nil {
 		return err
 	}
 
@@ -78,24 +86,252 @@ func ListBankSeeder(db *gorm.DB) error {
 	return nil
 }
 
+func ListTimeMovieSeeder(db *gorm.DB) error {
+	var listTimeMovie = []entities.TimeMovie{
+		{
+			ID:   1,
+			Time: "12.05",
+			Type: 1,
+		},
+		{
+			ID:   2,
+			Time: "14.30",
+			Type: 1,
+		},
+		{
+			ID:   3,
+			Time: "16.05",
+			Type: 1,
+		},
+		{
+			ID:   4,
+			Time: "18.30",
+			Type: 1,
+		},
+		{
+			ID:   5,
+			Time: "20.05",
+			Type: 1,
+		},
+		{
+			ID:   6,
+			Time: "22.30",
+			Type: 1,
+		},
+		{
+			ID:   7,
+			Time: "10.05",
+			Type: 2,
+		},
+		{
+			ID:   8,
+			Time: "12.30",
+			Type: 2,
+		},
+		{
+			ID:   9,
+			Time: "14.05",
+			Type: 2,
+		},
+		{
+			ID:   10,
+			Time: "16.30",
+			Type: 2,
+		},
+		{
+			ID:   11,
+			Time: "18.05",
+			Type: 2,
+		},
+		{
+			ID:   12,
+			Time: "20.30",
+			Type: 2,
+		},
+		{
+			ID:   13,
+			Time: "22.05",
+			Type: 2,
+		},
+		{
+			ID:   14,
+			Time: "09.05",
+			Type: 3,
+		},
+		{
+			ID:   15,
+			Time: "11.30",
+			Type: 3,
+		},
+		{
+			ID:   16,
+			Time: "13.05",
+			Type: 3,
+		},
+		{
+			ID:   17,
+			Time: "15.30",
+			Type: 3,
+		},
+		{
+			ID:   18,
+			Time: "17.05",
+			Type: 3,
+		},
+		{
+			ID:   19,
+			Time: "19.30",
+			Type: 3,
+		},
+		{
+			ID:   20,
+			Time: "11.05",
+			Type: 4,
+		},
+		{
+			ID:   21,
+			Time: "13.30",
+			Type: 4,
+		},
+		{
+			ID:   22,
+			Time: "15.05",
+			Type: 4,
+		},
+		{
+			ID:   23,
+			Time: "17.30",
+			Type: 4,
+		},
+		{
+			ID:   24,
+			Time: "19.05",
+			Type: 4,
+		},
+		{
+			ID:   25,
+			Time: "21.30",
+			Type: 4,
+		},
+		{
+			ID:   26,
+			Time: "10.05",
+			Type: 5,
+		},
+		{
+			ID:   27,
+			Time: "12.30",
+			Type: 5,
+		},
+		{
+			ID:   28,
+			Time: "14.05",
+			Type: 5,
+		},
+		{
+			ID:   29,
+			Time: "16.30",
+			Type: 5,
+		},
+		{
+			ID:   30,
+			Time: "18.05",
+			Type: 5,
+		},
+	}
+
+	for _, data := range listTimeMovie {
+		var timeMovie entities.TimeMovie
+		err := db.Where(&entities.TimeMovie{ID: data.ID}).First(&timeMovie).Error
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if err := db.Create(&data).Error; err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func ListStudioSeeder(db *gorm.DB) error {
+	var listPlace = []entities.Place{
+		{
+			ID:   1,
+			Name: "CGV",
+		},
+		{
+			ID:   2,
+			Name: "XXI",
+		},
+		{
+			ID:   3,
+			Name: "Cinepolis",
+		},
+		{
+			ID:   4,
+			Name: "Cinemaxx",
+		},
+		{
+			ID:   5,
+			Name: "New Star Cineplex",
+		},
+		{
+			ID:   6,
+			Name: "Flix Cinema",
+		},
+		{
+			ID:   7,
+			Name: "Hiflix",
+		},
+		{
+			ID:   8,
+			Name: "Platinum Cineplex",
+		},
+	}
+
+	for _, data := range listPlace {
+		var place entities.Place
+		err := db.Where(&entities.Place{ID: data.ID}).First(&place).Error
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
+		}
+
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			if err := db.Create(&data).Error; err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 func ListUserSeeder(db *gorm.DB) error {
 	var listUser = []entities.User{
 		{
-			Nama: "Admin",
-			NoTelp: "081234567890",
-			Email: "Admin@gmail.com", 
-			Password: "Admin123",
-			Role: "Admin",
-			Saldo: 0,
+			Nama:         "Admin",
+			NoTelp:       "081234567890",
+			Email:        "Admin@gmail.com",
+			Password:     "Admin123",
+			Age:          20,
+			TanggalLahir: "08/15/2003",
+			Role:         "Admin",
+			Saldo:        0,
 		},
 		{
-			Nama: "User",
-			NoTelp: "081234567890",
-			Email: "User@gmail.com", 
-			Password: "User123",
-			Role: "User",
-			Saldo: 0,
-		}, 
+			Nama:         "User",
+			NoTelp:       "081234567890",
+			Email:        "User@gmail.com",
+			Password:     "User123",
+			Age:          20,
+			TanggalLahir: "08/15/2003",
+			Role:         "User",
+			Saldo:        0,
+		},
 	}
 
 	hasTable := db.Migrator().HasTable(&entities.User{})

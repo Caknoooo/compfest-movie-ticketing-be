@@ -44,6 +44,9 @@ func SetUpDatabaseConnection() *gorm.DB{
 		entities.Topup{},
 		entities.User{},
 		entities.Movies{},
+		entities.Ticket{}, 
+		entities.Place{},
+		entities.TimeMovie{},
 	); err != nil{
 		fmt.Println(err)
 		panic(err)

@@ -25,6 +25,15 @@ func NewTopupRepository(db *gorm.DB) TopupRepository {
 }
 
 func (tr *topupRepository) CreateTopup(ctx context.Context, topup entities.Topup) (entities.Topup, error) {
+	var user entities.User
+
+	if err := tr.connection.Where("id", topup.UserID).First(&user).Error; err != nil {
+		return entities.Topup{}, err
+	}
+
+	user.Saldo += topup.Jumlah
+	tr.connection.Save(&user)
+
 	if err := tr.connection.Create(&topup).Error; err != nil {
 		return entities.Topup{}, err
 	}

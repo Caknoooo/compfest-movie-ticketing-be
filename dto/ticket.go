@@ -1,8 +1,21 @@
 package dto
 
-type TicketCreateDTO struct {
-	Amount int `json:"amount" binding:"required"`
-	Price  float64 `json:"price" binding:"required"`
+import "github.com/google/uuid"
 
-	MovieID string `json:"movie_id" binding:"required"`
+type TicketCreateDTO struct {
+	Amount     int      `json:"amount" binding:"required"`
+	Nomor      []uint64 `json:"nomor" binding:"required"`
+	Jam 			string   `json:"jam" binding:"required"`
+	Studio 		string   `json:"studio" binding:"required"`
+
+	MovieID uuid.UUID `gorm:"foreignKey" json:"movie_id"`
+}
+
+type GetAllTicketMovie struct {
+	MovieID uuid.UUID `gorm:"foreignKey" json:"movie_id"`
+}
+
+type SendScheduleMovie struct {
+	Jam 			string   `json:"jam" binding:"required"`
+	Studio 		string   `json:"studio" binding:"required"`
 }
