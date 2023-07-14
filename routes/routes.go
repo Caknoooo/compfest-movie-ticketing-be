@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Router(route *gin.Engine, UserController controller.UserController, SeederController controller.SeederController, topupController controller.TopupController, movieController controller.MovieController, ticketController controller.TicketController, jwtService services.JWTService) {
+func Router(route *gin.Engine, UserController controller.UserController, SeederController controller.SeederController, topupController controller.TopupController, movieController controller.MovieController, ticketController controller.TicketController, withDrawalController controller.WithDrawalController,  jwtService services.JWTService) {
 	routes := route.Group("/api/user")
 	{
 		routes.POST("", UserController.RegisterUser)
@@ -44,5 +44,11 @@ func Router(route *gin.Engine, UserController controller.UserController, SeederC
 		ticketRoutes.POST("/send", middleware.Authenticate(jwtService), ticketController.SendSchedule)
 		ticketRoutes.GET("/:movie_id", ticketController.GetAllTicketMovie)
 		ticketRoutes.GET("/", middleware.Authenticate(jwtService), ticketController.GetTicketUser)
+	}
+
+	withDrawalRoutes := route.Group("/api/with-drawal")
+	{
+		withDrawalRoutes.POST("/", middleware.Authenticate(jwtService), withDrawalController.CreateWithDrawal)
+		withDrawalRoutes.GET("/", middleware.Authenticate(jwtService), withDrawalController.GetAllWithDrawalUser)
 	}
 }

@@ -36,7 +36,7 @@ func (ts *topupService) CreateTopup(ctx context.Context, topupDTO dto.TopupCreat
 
 	topup.UserID = userID
 	topup.TanggalTransaksi = time.Now()
-	return ts.topupRepository.CreateTopup(ctx, topup)
+	return ts.topupRepository.CreateTopup(ctx, topup, int(topupDTO.BankID))
 }
 
 func (ts *topupService) GetAllTopupUser(ctx context.Context, userID uuid.UUID) ([]entities.Topup, error) {

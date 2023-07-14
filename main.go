@@ -35,11 +35,14 @@ func main() {
 		ticketRepository repository.TicketRepository = repository.NewTicketRepository(db)
 		ticketService services.TicketService = services.NewTicketService(ticketRepository)
 		ticketController controller.TicketController = controller.NewTicketController(ticketService, jwtService)
+		withDrawalRepository repository.WithDrawalRepository = repository.NewWithDrawalRepository(db)
+		withDrawalService services.WithDrawalService = services.NewWithDrawalService(withDrawalRepository)
+		withDrawalController controller.WithDrawalController = controller.NewWithDrawalController(withDrawalService, jwtService)
 	)
 
 	server := gin.Default()
 	server.Use(middleware.CORSMiddleware())
-	routes.Router(server, userController, seederController, topupController, movieController, ticketController, jwtService)
+	routes.Router(server, userController, seederController, topupController, movieController, ticketController, withDrawalController, jwtService)
 
 	if err := migration.Seeder(db); err != nil {
 		log.Fatalf("error seeding database: %v", err)

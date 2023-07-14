@@ -9,7 +9,7 @@ import (
 )
 
 type TopupRepository interface {
-	CreateTopup(ctx context.Context, topup entities.Topup) (entities.Topup, error)
+	CreateTopup(ctx context.Context, topup entities.Topup, bankID int) (entities.Topup, error)
 	GetAllTopupUser(ctx context.Context, userID uuid.UUID) ([]entities.Topup, error)
 	GetTopupByID(ctx context.Context, topupID uuid.UUID) (entities.Topup, error)
 }
@@ -24,8 +24,13 @@ func NewTopupRepository(db *gorm.DB) TopupRepository {
 	}
 }
 
-func (tr *topupRepository) CreateTopup(ctx context.Context, topup entities.Topup) (entities.Topup, error) {
+func (tr *topupRepository) CreateTopup(ctx context.Context, topup entities.Topup, bankID int) (entities.Topup, error) {
 	var user entities.User
+	var bank entities.ListBank
+
+	if err := tr.connection.Where("id", bankID).First(&bank).Error; err != nil {
+		return entities.Topup{}, err
+	}
 
 	if err := tr.connection.Where("id", topup.UserID).First(&user).Error; err != nil {
 		return entities.Topup{}, err
@@ -33,6 +38,7 @@ func (tr *topupRepository) CreateTopup(ctx context.Context, topup entities.Topup
 
 	user.Saldo += topup.Jumlah
 	tr.connection.Save(&user)
+	topup.BankName = bank.Name
 
 	if err := tr.connection.Create(&topup).Error; err != nil {
 		return entities.Topup{}, err

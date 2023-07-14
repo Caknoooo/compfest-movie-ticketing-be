@@ -41,9 +41,9 @@ func (tr *ticketRepository) CreateTicket(ctx context.Context, ticket entities.Ti
 	}
 
 	// Check Umur User < Age Movie
-	if user.Age < movieEntity.AgeRating {
-		return entities.Ticket{}, errors.New("umur tidak memenuhi syarat")
-	}
+	// if user.Age < movieEntity.AgeRating {
+	// 	return entities.Ticket{}, errors.New("umur tidak memenuhi syarat")
+	// }
 
 	amount := len(amountTicket)
 	totalHarga := movieEntity.TicketPrice * float64(amount)
@@ -137,4 +137,3 @@ func (tr *ticketRepository) GetTicketUser(ctx context.Context, userID uuid.UUID)
 
 	return result, nil
 }
-
