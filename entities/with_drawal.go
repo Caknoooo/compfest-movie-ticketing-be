@@ -11,6 +11,7 @@ type WithDrawal struct {
 	JumlahPenarikan  float64   `gorm:"type:float" json:"jumlah_penarikan"`
 	TanggalTransaksi time.Time `gorm:"timestamp with time zone" json:"tanggal_transaksi"`
 	BankName         string    `gorm:"type:varchar(100)" json:"bank_name"`
+	NoRek		  string    `gorm:"type:varchar(100)" json:"no_rek"`
 
 	UserID uuid.UUID `gorm:"type:uuid" json:"user_id"`
 	User   User      `gorm:"foreignKey:UserID" json:"-"`
