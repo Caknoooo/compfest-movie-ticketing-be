@@ -109,7 +109,7 @@ func (tr *ticketRepository) GetAllTicketMovie(ctx context.Context, ticket entiti
 }
 
 func (tr *ticketRepository) GetTicketUser(ctx context.Context, userID uuid.UUID) ([]map[string]interface{}, error) {
-	ticketMap := make(map[int][]int)
+	ticketMap := make(map[int]map[string]interface{})
 	var tickets []entities.Ticket
 
 	if err := tr.db.Where("user_id = ?", userID).Find(&tickets).Error; err != nil {
@@ -117,22 +117,29 @@ func (tr *ticketRepository) GetTicketUser(ctx context.Context, userID uuid.UUID)
 	}
 
 	for _, ticket := range tickets {
-		ticketMap[int(ticket.KodeTransaksi)] = append(ticketMap[int(ticket.KodeTransaksi)], int(ticket.Nomor))
+		kodeTransaksi := int(ticket.KodeTransaksi)
+
+		if _, exists := ticketMap[kodeTransaksi]; !exists {
+			ticketMap[kodeTransaksi] = map[string]interface{}{
+				"nomor":         []int{},
+				"kode_transaksi": kodeTransaksi,
+				"jam":           ticket.Jam,
+				"studio":        ticket.Studio,
+				"user_id":       ticket.UserID,
+				"movie_id":      ticket.MovieID,
+				"created_at":    ticket.CreatedAt,
+				"updated_at":    ticket.UpdatedAt,
+			}
+		}
+
+		nomors := ticketMap[kodeTransaksi]["nomor"].([]int)
+		nomors = append(nomors, int(ticket.Nomor))
+		ticketMap[kodeTransaksi]["nomor"] = nomors
 	}
 
 	var result []map[string]interface{}
-	for kodeTransaksi, nomors := range ticketMap {
-		ticket := make(map[string]interface{})
-		ticket["nomor"] = nomors
-		ticket["kode_transaksi"] = kodeTransaksi
-		ticket["jam"] = tickets[0].Jam
-		ticket["studio"] = tickets[0].Studio
-		ticket["user_id"] = tickets[0].UserID
-		ticket["movie_id"] = tickets[0].MovieID
-		ticket["created_at"] = tickets[0].CreatedAt
-		ticket["updated_at"] = tickets[0].UpdatedAt
-
-		result = append(result, ticket)
+	for _, ticketData := range ticketMap {
+		result = append(result, ticketData)
 	}
 
 	return result, nil
