@@ -6,9 +6,9 @@ import (
 	"github.com/google/uuid"
 )
 
-type Topup struct {
+type WithDrawal struct {
 	ID               uuid.UUID `gorm:"type:uuid;primary_key;default:uuid_generate_v4()" json:"id"`
-	Jumlah           float64   `gorm:"type:float" json:"jumlah"`
+	JumlahPenarikan  float64   `gorm:"type:float" json:"jumlah_penarikan"`
 	TanggalTransaksi time.Time `gorm:"timestamp with time zone" json:"tanggal_transaksi"`
 	BankName         string    `gorm:"type:varchar(100)" json:"bank_name"`
 
