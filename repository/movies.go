@@ -82,7 +82,7 @@ func (mr *movieRepository) GetMovieByID(ctx context.Context, movieID uuid.UUID) 
 func (mr *movieRepository) GenerateRandomTimeMovie(number int) ([]entities.TimeMovie, error) {
 	var timeMovie []entities.TimeMovie
 
-	if err := mr.connection.Where("type = ?", number % 3 + 1).Find(&timeMovie).Error; err != nil {
+	if err := mr.connection.Where("type = ?", number % 5 + 1).Find(&timeMovie).Error; err != nil {
 		return []entities.TimeMovie{}, err
 	}
 
