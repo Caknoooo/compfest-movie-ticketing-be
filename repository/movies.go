@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"math/rand"
 
 	"github.com/Caknoooo/golang-clean_template/entities"
 	"github.com/google/uuid"
@@ -13,7 +12,7 @@ type MovieRepository interface {
 	CreateMovies(ctx context.Context, movies entities.Movies) (entities.Movies, error)
 	GetAllMovies(ctx context.Context) ([]entities.Movies, error)
 	GetMovieByID(ctx context.Context, movieID uuid.UUID) (any, error)
-	GenerateRandomTimeMovie() ([]entities.TimeMovie, error)
+	GenerateRandomTimeMovie(number int) ([]entities.TimeMovie, error)
 }
 
 type movieRepository struct {
@@ -62,7 +61,7 @@ func (mr *movieRepository) GetMovieByID(ctx context.Context, movieID uuid.UUID) 
 	}
 
 	for i := range studio {
-		timeMovie, err := mr.GenerateRandomTimeMovie()
+		timeMovie, err := mr.GenerateRandomTimeMovie(i)
 		if err != nil {
 			return nil, err
 		}
@@ -80,10 +79,10 @@ func (mr *movieRepository) GetMovieByID(ctx context.Context, movieID uuid.UUID) 
 	return data, nil
 }
 
-func (mr *movieRepository) GenerateRandomTimeMovie() ([]entities.TimeMovie, error) {
+func (mr *movieRepository) GenerateRandomTimeMovie(number int) ([]entities.TimeMovie, error) {
 	var timeMovie []entities.TimeMovie
 
-	if err := mr.connection.Where("type = ?", rand.Intn(5) + 1).Find(&timeMovie).Error; err != nil {
+	if err := mr.connection.Where("type = ?", number % 3 + 1).Find(&timeMovie).Error; err != nil {
 		return []entities.TimeMovie{}, err
 	}
 
